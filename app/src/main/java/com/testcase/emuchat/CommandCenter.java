@@ -2,6 +2,7 @@ package com.testcase.emuchat;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.testcase.emuchat.dataProviders.AbstractProvider;
 import com.testcase.emuchat.dataProviders.dummyProvider.DummyProvider;
@@ -19,7 +20,8 @@ public class CommandCenter implements AbstractProvider.OnEventListener{
     private static final String MY_NAME = "Me";
     private static final String RESULT = "result";
     private static final String MESSAGES_LIST = "messages";
-     private static CommandCenter ourInstance;
+    private static final String TAG = "CommandCenter";
+    private static CommandCenter ourInstance;
     private static AbstractProvider mDataProvider;
     private static List<OnCommandsListener> onCommandsListeners;
 
@@ -114,20 +116,25 @@ public class CommandCenter implements AbstractProvider.OnEventListener{
     }
 
     public void setOnNewCommandsListener(OnCommandsListener listener){
+        Log.d(TAG, "setOnNewCommandsListener: "+String.valueOf(onCommandsListeners.size()));
         if (!onCommandsListeners.contains(listener)) onCommandsListeners.add(listener);
     }
 
     public void removeOnNewCommandsListener(OnCommandsListener listener){
+        Log.d(TAG, "removeOnNewCommandsListener: "+String.valueOf(onCommandsListeners.size()));
         if (onCommandsListeners.contains(listener)) onCommandsListeners.remove(listener);
     }
 
     public void dismiss(){
+        Log.d(TAG, "dismiss");
         ExecutorWithFeedback.stop();
+        mDataProvider.removeOnEventListener(this);
         ourInstance = null;
     }
 
     @Override
     public void onEvent(int eventType) {
+        Log.d(TAG, "onEvent: "+String.valueOf(eventType));
         switch (eventType){
             case AbstractProvider.NEW_MESSAGE: notifyNewCommandsListeners(NEW_MESSAGE); break;
             case AbstractProvider.BASE_CLEARED: notifyNewCommandsListeners(RELOAD_LIST); break;

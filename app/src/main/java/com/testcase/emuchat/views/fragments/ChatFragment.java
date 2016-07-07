@@ -42,7 +42,7 @@ public class ChatFragment extends Fragment implements CommandCenter.OnCommandsLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
-        commandCenter = CommandCenter.getInstance(getContext());
+        if (commandCenter==null) commandCenter = CommandCenter.getInstance(getContext());
         chatItemList = new MyRecyclerView.RVList<>();
         setRetainInstance(true);
     }
